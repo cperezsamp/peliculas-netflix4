@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, Image, Pressable, Modal, TouchableWithoutFeedback, } from 'react-native';
-import { db } from '../config/config_bbdd';
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
+//import { db } from '../config/config_bbdd';
+//import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ScrollView } from 'react-native-web';
+import firestore from '@react-native-firebase/firestore';
 
 const Item = ({ actor, navigation }) => (
   <TouchableWithoutFeedback onPress={() =>
@@ -29,33 +30,33 @@ const Home = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const handleSetPelicula = (obj) => {
-    setPelicula(obj[0])
+    setPelicula(obj)
     setPeliculaIsLoaded(true)
   }
 
   useEffect(() => {
-    const collectionRef = collection(db, 'peliculas');
-    const q = query(collectionRef, where('id', "==", "DOlybUabp06JoqDpj7jp"));
-    const unsuscribe = onSnapshot(q, querySnapshot => {
-      handleSetPelicula(
-        querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          anyo: doc.data().anyo,
-          argumento: doc.data().argumento,
-          duracionHoras: doc.data().duracionHoras,
-          duracionMinutos: doc.data().duracionMinutos,
-          image: doc.data().image,
-          titulo: doc.data().titulo,
-        }))
-      )
-    });
-    return unsuscribe;
-
+    const subscriber = firestore()
+      .collection('peliculas')
+      .doc("DOlybUabp06JoqDpj7jp")
+      .onSnapshot(documentSnapshot => { 
+        handleSetPelicula({
+            id: documentSnapshot.data().id,
+            anyo: documentSnapshot.data().anyo,
+            argumento: documentSnapshot.data().argumento,
+            duracionHoras: documentSnapshot.data().duracionHoras,
+            duracionMinutos: documentSnapshot.data().duracionMinutos,
+            image: documentSnapshot.data().image,
+            titulo: documentSnapshot.data().titulo,    
+        }
+        );
+      });
+      
+      return () => subscriber();
   }, [])
 
 
   useEffect(() => {
-    const collectionRef = collection(db, 'actores');
+    /*const collectionRef = firestore().collection('actores');
     const q = query(collectionRef, where('idPelicula', "==", "DOlybUabp06JoqDpj7jp"));
     const unsuscribe = onSnapshot(q, querySnapshot => {
       setActores(
@@ -70,15 +71,30 @@ const Home = ({ navigation }) => {
         }))
       )
     });
-    return unsuscribe;
-
-  }, [])
+    return unsuscribe;*/
+    firestore()
+    .collection('actores')
+    .get()
+    .then(querySnapshot => {
+      setActores(
+        querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          nombre: doc.data().nombre,
+          clip: doc.data().clip,
+          edad: doc.data().edad,
+          imagen: doc.data().imagen,
+          nacionalidad: doc.data().nacionalidad,
+          vivo: doc.data().vivo,
+        }))
+      )
+      });
+},[]);
+  
 
 
 
 
   return (
-    
     !peliculaIsLoaded ? <Text>Loading app....</Text> :
       <SafeAreaView style={styles.container}>
         <Text style={styles.title}> {pelicula.titulo} - {pelicula.anyo}</Text>

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, Image, Button, Modal, Pressable, Alert, Dimensions } from 'react-native';
-import { db } from '../config/config_bbdd';
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
+/*mport { db } from '../config/config_bbdd';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';*/
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import firestore from '@react-native-firebase/firestore';
 
 
 const Detail = ({ navigation, route }) => {
@@ -16,9 +17,11 @@ const Detail = ({ navigation, route }) => {
   }
 
   useEffect(() => {
-    const collectionRef = collection(db, 'actores');
-    const q = query(collectionRef, where('nombre', "==", route.params.nombre));
-    const unsuscribe = onSnapshot(q, querySnapshot => {
+    firestore()
+    .collection('actores')
+    .where('nombre', '==', route.params.nombre)
+    .get()
+    .then(querySnapshot => {
       handleSetActor(
         querySnapshot.docs.map(doc => ({
           id: doc.id,
@@ -31,8 +34,6 @@ const Detail = ({ navigation, route }) => {
           vivo: doc.data().vivo,
         })))
     });
-
-    return unsuscribe;
   }, [])
 
   return (
