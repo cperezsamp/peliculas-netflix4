@@ -7,6 +7,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ScrollView } from 'react-native-web';
 import firestore from '@react-native-firebase/firestore';
 
+
+
 const Item = ({ actor, navigation }) => (
   <TouchableWithoutFeedback onPress={() =>
     navigation.navigate('Detail', { nombre: actor.nombre })
@@ -56,22 +58,6 @@ const Home = ({ navigation }) => {
 
 
   useEffect(() => {
-    /*const collectionRef = firestore().collection('actores');
-    const q = query(collectionRef, where('idPelicula', "==", "DOlybUabp06JoqDpj7jp"));
-    const unsuscribe = onSnapshot(q, querySnapshot => {
-      setActores(
-        querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          nombre: doc.data().nombre,
-          clip: doc.data().clip,
-          edad: doc.data().edad,
-          imagen: doc.data().imagen,
-          nacionalidad: doc.data().nacionalidad,
-          vivo: doc.data().vivo,
-        }))
-      )
-    });
-    return unsuscribe;*/
     firestore()
     .collection('actores')
     .get()
