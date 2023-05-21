@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, Image, Pressable, Modal, TouchableWithoutFeedback, } from 'react-native';
+import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, Image, Pressable, Modal, TouchableWithoutFeedback, Alert } from 'react-native';
 //import { db } from '../config/config_bbdd';
 //import { collection, onSnapshot, query, where } from 'firebase/firestore';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { ScrollView } from 'react-native-web';
+//import { NavigationContainer } from '@react-navigation/native';
+//import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+//import { ScrollView } from 'react-native-web';
 import firestore from '@react-native-firebase/firestore';
+import messaging from '@react-native-firebase/messaging';
 
 
 
@@ -76,8 +77,16 @@ const Home = ({ navigation }) => {
       });
 },[]);
   
+useEffect(() => {
+  const unsubscribe = messaging().onMessage(async remoteMessage => {
+    console.log('Message')
+  });
+
+  return unsubscribe;
+}, [])
 
 
+messaging
 
 
   return (
