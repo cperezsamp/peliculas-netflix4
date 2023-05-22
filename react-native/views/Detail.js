@@ -4,6 +4,7 @@ import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, Image, Butto
 import { collection, onSnapshot, query, where } from 'firebase/firestore';*/
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import firestore from '@react-native-firebase/firestore';
+import messaging from '@react-native-firebase/messaging';
 
 
 const Detail = ({ navigation, route }) => {
@@ -19,7 +20,7 @@ const Detail = ({ navigation, route }) => {
   useEffect(() => {
     firestore()
     .collection('actores')
-    .where('nombre', '==', route.params.nombre)
+    .where('id', '==', route.params.id)
     .get()
     .then(querySnapshot => {
       handleSetActor(
@@ -39,10 +40,10 @@ const Detail = ({ navigation, route }) => {
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      console.log('Message')
+      console.log('Message on details')
       firestore()
       .collection('actores')
-      .where('nombre', '==', route.params.nombre)
+      .where('id', '==', route.params.id)
       .get()
       .then(querySnapshot => {
         handleSetActor(

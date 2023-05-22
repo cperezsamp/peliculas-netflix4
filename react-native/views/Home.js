@@ -12,7 +12,7 @@ import messaging from '@react-native-firebase/messaging';
 
 const Item = ({ actor, navigation }) => (
   <TouchableWithoutFeedback onPress={() =>
-    navigation.navigate('Detail', { nombre: actor.nombre })
+    navigation.navigate('Detail', { id: actor.id })
   }>
     <View style={styles.item}>
       <Text style={styles.title}>{actor.nombre}</Text>
