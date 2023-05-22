@@ -36,6 +36,30 @@ const Detail = ({ navigation, route }) => {
     });
   }, [])
 
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      console.log('Message')
+      firestore()
+      .collection('actores')
+      .where('nombre', '==', route.params.nombre)
+      .get()
+      .then(querySnapshot => {
+        handleSetActor(
+          querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            nombre: doc.data().nombre,
+            clip: doc.data().clip,
+            edad: doc.data().edad,
+            imagen: doc.data().imagen,
+            nacionalidad: doc.data().nacionalidad,
+            nacionalidad: doc.data().nacionalidad,
+            vivo: doc.data().vivo,
+        })))
+    })
+    });
+  }, [])
+
   return (
     !actorIsLoaded ? <Text>Loading actor....</Text> :
       <SafeAreaView style={[styles.container, styles.centeredView]}>

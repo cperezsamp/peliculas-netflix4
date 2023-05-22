@@ -25,7 +25,44 @@ const Item = ({ actor, navigation }) => (
 );
 
 
+const checkToken = (async () => {
+  const fcmToken = await messaging().getToken();
+  if (fcmToken) {
+     console.log(fcmToken);
+     const tokenId= firestore().collection('FCMTokens')
+     .where('token', '==', fcmToken).get()
+     .then(
+      querySnapshot => {
+        console.log(querySnapshot.docs);
+        if(querySnapshot.docs == 0){
+          firestore().collection('FCMTokens').add(
+            {
+              token: fcmToken
+            }
+           )
+           .then( (response) => {
+            console.log('Añadido token con id: ', response.id);
+           })
+        }        
+      }
+     );
+     /*firestore().collection('FCMTokens').add(
+      {
+        token: fcmToken
+      }
+     )
+     .then( (response) => {
+      console.log('Añadido token con id: ', response.id);
+     })*/
+  } 
+ })();
+
+ 
+
+
+
 const Home = ({ navigation }) => {
+
 
   const [actores, setActores] = useState([]);
   const [pelicula, setPelicula] = useState([]);
@@ -76,17 +113,31 @@ const Home = ({ navigation }) => {
       )
       });
 },[]);
-  
+ 
+//se reciben mensajes
 useEffect(() => {
   const unsubscribe = messaging().onMessage(async remoteMessage => {
     console.log('Message')
+    firestore()
+    .collection('actores')
+    .get()
+    .then(querySnapshot => {
+      setActores(
+        querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          nombre: doc.data().nombre,
+          clip: doc.data().clip,
+          edad: doc.data().edad,
+          imagen: doc.data().imagen,
+          nacionalidad: doc.data().nacionalidad,
+          vivo: doc.data().vivo,
+        }))
+      )
+      });
   });
-
-  return unsubscribe;
 }, [])
 
 
-messaging
 
 
   return (
