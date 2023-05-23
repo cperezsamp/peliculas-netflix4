@@ -46,14 +46,6 @@ const checkToken = (async () => {
         }        
       }
      );
-     /*firestore().collection('FCMTokens').add(
-      {
-        token: fcmToken
-      }
-     )
-     .then( (response) => {
-      console.log('Añadido token con id: ', response.id);
-     })*/
   } 
  })();
 
