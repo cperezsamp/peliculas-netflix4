@@ -12,8 +12,8 @@ import { Pelicula } from '../models/pelicula';
   styleUrls: ['./actors.component.css']
 })
 export class ActorsComponent implements OnInit {
-  @Input() personaje: Personaje;
-  actor?: Actor | null; // Añadido fallback a null para evitar un warning de consola
+  @Input() findActor: Actor;
+  actor: Actor; 
   isVisible: Boolean;
   isEditing: Boolean;
 
@@ -21,7 +21,12 @@ export class ActorsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.actoresService.findOneById(this.personaje.actor.id).then((obj: any) => { this.actor = new Actor(obj.id, obj.nombre, obj.edad, obj.clip, obj.nacionalidad, obj.vivo, obj.imagen) });
+    //this.actoresService.findOneById(this.personaje.actor.id).then((obj: any) => { this.actor = new Actor(obj.id, obj.nombre, obj.edad, obj.clip, obj.nacionalidad, obj.vivo, obj.imagen) });
+    this.actoresService.findOneById(this.findActor.id).then(
+      (obj: any) => 
+      { 
+        this.actor = new Actor(this.findActor.id, obj.nombre, obj.edad, obj.clip, obj.nacionalidad, obj.vivo, obj.imagen) 
+      });
     this.isVisible = false;
     this.isEditing = false;
   }
@@ -52,12 +57,12 @@ export class ActorsComponent implements OnInit {
     } */
 
 
-  onClick(personaje: Personaje) {
+  onClick() {
     this.isVisible = !this.isVisible;
   }
 
-  delete(personaje: Personaje) {
-    this.personajesService.delete(personaje)
+  delete() {
+    this.actoresService.delete(this.actor);
   }
 
   editPersonaje() {

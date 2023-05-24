@@ -19,8 +19,6 @@ import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import { UploadfileComponent } from './uploadfile/uploadfile.component';
 import { provideStorage,getStorage } from '@angular/fire/storage';
 import { StorageService } from './storage.service';
-import { ActorsFormComponent } from './actors-form/actors-form.component';
-import { ActorsListComponent } from './actors-list/actors-list.component';
 
 
 
@@ -35,8 +33,6 @@ import { ActorsListComponent } from './actors-list/actors-list.component';
     PeliculasComponent,
     ActorDetailsComponent,
     UploadfileComponent,
-    ActorsFormComponent,
-    ActorsListComponent,
   ],
   imports: [
     BrowserModule,

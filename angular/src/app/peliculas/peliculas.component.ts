@@ -7,7 +7,7 @@ import { PeliculasService } from '../peliculas.service';
 import { PersonajesService } from '../personajes.service';
 import { ActoresService } from '../actores.service';
 import { FormsModule } from '@angular/forms';
-import { Storage, listAll, ref, uploadBytes, getDownloadURL, StorageReference } from '@angular/fire/storage';
+import { Storage, listAll, ref, uploadBytes, getDownloadURL, StorageReference, uploadBytesResumable } from '@angular/fire/storage';
 import { DomSanitizer } from '@angular/platform-browser';
 import { StorageService } from '../storage.service';
 
@@ -171,21 +171,13 @@ export class PeliculasComponent implements OnInit {
     };
 
     const res = await this.actoresService.add(actorToFirestone);
-    const actorFromFirestone = await this.actoresService.findOneById(res.id).then((obj: any) => new Actor(res.id, obj.nombre, obj.edad, obj.clip, obj.nacionalidad, obj.vivo, this.imageForm))
-    const actorRef = this.actoresService.getOneById(actorFromFirestone)
+    const actorFromFirestore = await this.actoresService.findOneById(res.id).then((obj: any) => new Actor(res.id, obj.nombre, obj.edad, obj.clip, obj.nacionalidad, obj.vivo, this.imageForm))
+    const actorRef = this.actoresService.getOneById(actorFromFirestore)
     const peliculaRef = this.peliculasService.getOneById(pelicula)
 
-    const newPersonaje = {
-      nombrePersonaje: value.newNombrePersonaje,
-      descripcion: value.newDescripcion,
-      actor: actorRef,
-      pelicula: peliculaRef,
-      imagen: value.newImagenActor,
-    };
-    const idPersonaje = await this.personajesService.add(newPersonaje);
-    let createdPer = new Personaje(actorFromFirestone as Actor, pelicula, newPersonaje.nombrePersonaje, newPersonaje.descripcion, newPersonaje.imagen, idPersonaje.id);
-    this.uploadImageActor(this.imageForm, actorFromFirestone, createdPer);
-    this.uploadClip(this.newClip, actorFromFirestone);
+    this.uploadClip(this.newClip, this.imageForm, actorFromFirestore);
+    //this.uploadImageActor(this.imageForm, actorFromFirestore);
+    
   }
 
   //previsualizacion de la imagen
@@ -234,35 +226,27 @@ export class PeliculasComponent implements OnInit {
 
 
   //sube la imagen al storage
-  async uploadImageActor(image: any, actor: Actor, personaje: Personaje) {
-    const reference = ref(this.storage, `assets/images/films/${image.name}`);  //referencia a la imagen
-    uploadBytes(reference, image)
-      .then(
-        response => {
-          console.log("IMAGES REF ORIGIN: ",this.imagesRefs);
-          let imagesref= this.storageService.getAllImages();
-          console.log("IMAGES REF NEW: ", imagesref);
-          for (let image of imagesref) {
-            console.log("IMAGE NAME: ", image.name);
-            console.log("IMAGE FROM: ", this.imageForm.name);
-            if (image.name == this.imageForm.name) {
-              getDownloadURL(image)
-                .then(
-                  (response) => {
-                    actor.imagen = response;
-                    personaje.imagen = response;
-                    this.actoresService.update(actor);
-                    this.personajesService.update(personaje);
-                    this.changeAgregarActor("");
-                  }
-                )
-                .catch((error) => console.log(error))
+  async uploadImageActor(image: any, actor: Actor) {
+    console.log("IMAGE: ", image);
+    const reference = ref(this.storage, `assets/images/actores/${image.name}`);
+    const uploadTask= uploadBytesResumable(reference, image);
+    uploadTask.on( 'state_changed',
+      (snapshot) =>{
+        console.log("IMAGEN SUBIDA: ", snapshot)
+      },
+      (error) =>{
+        console.log("ERROR AL SUBIR IMAGEN: ", error)
+      },
+      () =>{
+        getDownloadURL(uploadTask.snapshot.ref).then((url) =>{
+          console.log("URL DE IMAGEN: ", url);
+          actor.imagen = url;
+          this.actoresService.update(actor);
+          this.changeAgregarActor("");
+        })
+      }
 
-            }
-          }
-        }
-      )
-      .catch(error => console.log(error))
+    )
   }
 
   prepareClip($event: any) {
@@ -277,7 +261,7 @@ export class PeliculasComponent implements OnInit {
       )
   }
 
-  async uploadClip(clip: any, actor: Actor) {
+  async uploadClip(clip: any, image: any, actor: Actor) {
     const reference = ref(this.storage, `media/${clip.name}`);  //referencia a la imagen  o video
     uploadBytes(reference, clip)
       .then(
@@ -289,7 +273,8 @@ export class PeliculasComponent implements OnInit {
                   (response) => {
                     this.clipUrl = response;
                     actor.clip = response;
-                    this.actoresService.update(actor);
+                    //this.actoresService.update(actor);
+                    this.uploadImageActor(image, actor);
                   }
                 )
                 .catch((error) => console.log(error))

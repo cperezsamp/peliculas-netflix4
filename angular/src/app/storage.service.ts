@@ -29,6 +29,22 @@ export class StorageService {
     return imagesArray;
   }
 
+
+  async getAllImagesActors(): Promise<StorageReference[]>{
+    let imagesArray :StorageReference[]= [];
+    const images= ref(this.storage, 'assets/images/actores');
+    listAll(images)
+    .then( async response => {
+        for (let item of response.items){
+          //const url =  await getDownloadURL(item);  //tiene que estar con a la espera para funcionar y la funcion anonima como async
+          imagesArray.push(item);
+        }
+      }
+    ) 
+    .catch( error => console.log(error))
+    return imagesArray;
+  }
+
   getAllClips(): StorageReference[]{
     let clipsArray :StorageReference[]= [];
     const clips= ref(this.storage, 'media/');

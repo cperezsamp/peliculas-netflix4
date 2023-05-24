@@ -21,8 +21,11 @@
                     </div>            
                     <section class="cast-row">
                         <h3>Cast</h3>
-                        <!--<app-actors class="col-2 m-4" *ngFor="let personaje of pelicula.personajes" [personaje]="personaje"></app-actors>-->
-                        <app-actors-list class="app-actors-list" [pelicula]="pelicula"></app-actors-list>
+                        <div *ngFor="let actor of actores" class="app-actors-list" >
+                            <app-actors  [findActor]="actor"></app-actors>
+                        </div>
+                    </section>
+                    <section>
                         <button class="btn btn-primary" (click)="changeAgregarActor(pelicula.titulo)">Agregar Actor</button>
                       
                         <!--Formulario agregacion nuevo actor / personaje -->
@@ -59,7 +62,7 @@
                                         <label for="fallecido">falso</label><br>
                                 </div>   
                                 </section>
-                                <section class="col">
+                                <!--<section class="col">
                                     <h2>Datos Personaje</h2>
                                     <div class="form-group">
                                         <label >Nombre Personaje</label><br/>
@@ -69,7 +72,7 @@
                                         <label >Descripción</label><br/>
                                         <input type="text" [(ngModel)]="newDescripcion" name="newDescripcion">
                                     </div>
-                                </section>  
+                                </section>-->  
 
                                 <section class="col">
                                     <button class="btn btn-primary" (click)="addActor(RegisterForm.value, pelicula)">Guardar</button>
