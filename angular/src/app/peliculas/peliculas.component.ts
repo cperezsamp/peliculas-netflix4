@@ -33,6 +33,8 @@ export class PeliculasComponent implements OnInit {
   previsualizacion: string = "";
   imagesRefs: StorageReference[];
   clipsRefs: StorageReference[];
+
+  actores: Actor[];
   //variables para enviar mensaje de comprobacion
 
   //variables formulario agregacion pelicula
@@ -65,6 +67,11 @@ export class PeliculasComponent implements OnInit {
     this.peliculasService.getAll().subscribe(
       peliculas => {
         this.peliculas = peliculas;
+      }
+    )
+    this.actoresService.getAll().subscribe(
+      actores =>{
+        this.actores= actores;
       }
     )
     this.imagesRefs = this.storageService.getAllImages();

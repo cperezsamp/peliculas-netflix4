@@ -6,7 +6,6 @@
             </div>
         </section>
         <div class="col-9">
-            <div *ngIf="!editar; else edit">
                 <div  *ngFor=" let pelicula of peliculas" >
                     <div class="img-box row">
                         <div class="float-left col-5" >
@@ -19,9 +18,6 @@
                         <h3 class="overview">Overview</h3>
                         <p class="argumento">{{pelicula.argumento}}</p>
                         </div>
-                        <button (click)="editPelicula(pelicula)" class="mt-3">Editar</button>
-                        
-                        <button class=" mt-3" (click)="deletePelicula(pelicula)">Eliminar Pelicula</button>
                     </div>            
                     <section class="cast-row">
                         <h3>Cast</h3>
@@ -85,80 +81,7 @@
                                             
                             <br><hr>
                 </div>
-            </div>
-            <ng-template #edit>
-                <div  *ngFor=" let pelicula of peliculas" >
-                    <div class="img-box row">
-                        <div class="float-left col-5" >
-                            <div *ngIf="previsualizacion; else origin">
-                                <img class="img-pelicula"  [src]="previsualizacion" alt="Pelicula 1 image">
-                            </div>
-                            <ng-template #origin>
-                                <img class="img-pelicula"  src={{pelicula.image}} alt="Pelicula 1 image">
-                            </ng-template>
-                            <p>Modificar imagen</p>
-                            <!--formulario para cambiar imagen-->
-                            <div class="mb-3">
-                                <input type="file" accept="file_type | iamge/*" (change)="previewFile($event)">
-                            </div>
-                        </div>
-                        
-                        <div class="desc-box col-7">
-                        <label> Titulo:</label>
-                        <input type="text" placeholder="{{pelicula.titulo}}" [(ngModel)]="tituloForm" name="tituloForm">
-                        <label >Año</label>
-                        <input type="number" placeholder="{{pelicula.anyo}}" [(ngModel)]="anyoForm" name="anyoForm">
-                        <label >Duaracion horas</label>
-                        <input type="number" placeholder="{{pelicula.duracionHoras}}" [(ngModel)]="duracionHForm" name="duracionHForm">
-                        <br>
-                        <label>Duracion minutos</label> 
-                        <input type="number" placeholder="{{pelicula.duracionMinutos}}" [(ngModel)]="duracionMForm" name="duracionMForm">
-                        <h3 class="overview">Overview</h3>
-                        <textarea [(ngModel)]="overviewForm" name="overviewForm" id="overviewForm" cols="30" rows="10" >
-                          
-                        </textarea>
-                        </div>
-                        <button (click)="savePelicula(pelicula)">Guardar</button>
-                        <button  (click)="editPelicula(pelicula)">Cancelar</button>
-                    </div>            
-                    <br><hr>
-                </div>
-            </ng-template>
-            
-            <button (click)="changeAgregar()">Agregar pelicula</button>
-            <!--Formulario agregacion nueva pelicula-->
-            <div *ngIf="agregar" class="img-box row">
-                <div class="float-left col-5" >
-                    <div *ngIf="previsualizacion">
-                        <img class="img-pelicula"  [src]="previsualizacion" alt="Pelicula 1 image">
-                    </div>
-                    <p>Agregar imagen</p>
-                    <!--formulario para cambiar imagen-->
-                    <div class="mb-3">
-                        <input type="file" accept="file_type | iamge/*" (change)="previewFile($event)">
-                    </div>
-                </div>
-                
-                <div class="desc-box col-7">
-                <label> Titulo:</label>
-                <input type="text" [(ngModel)]="newTitulo" name="newTitulo">
-                <label >Año</label>
-                <input type="number" [(ngModel)]="newAnyo" name="newAnyo">
-                <label >Duaracion horas</label>
-                <input type="number" [(ngModel)]="newDuracionH" name="newDuracionH">
-                <br>
-                <label>Duracion minutos</label> 
-                <input type="number" [(ngModel)]="newDuracionM" name="newDuracionM">
-                <h3 class="overview">Overview</h3>
-                <textarea [(ngModel)]="newOverview" name="newOverview" id="newOverview" cols="30" rows="10" >
-                  
-                </textarea>
-                </div>
-                <button (click)="agregarPelicula()">Guardar</button>
-                <button (click)="changeAgregar()">Cancelar</button>
-            </div>            
-           
-            
+
         </div>
 </div>
 </div>

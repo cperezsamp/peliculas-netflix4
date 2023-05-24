@@ -28,6 +28,8 @@ export class PeliculasService {
     // y el campo por el que vamos a ordenar la busqueda, en esete caso id, finalment lo casteamos al tipo Observable que hemos indicado que retorna esta funcion.
   }
 
+
+
   //obtener una pelicula por su id
   getOneById(pelicula: Pelicula) {
     return doc(this.firestore, `peliculas/${pelicula.id}`);
