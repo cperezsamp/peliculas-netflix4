@@ -8,5 +8,7 @@ export const environment = {
     authDomain: 'peliculas-netflix-faa3a.firebaseapp.com',
     messagingSenderId: '300907069864',
   },
-    production: false
+  production: false
+  ,
+  firebase_token: "BCBFvjwHEBcozxyaESKCvtaOQ7ikKuuNYovKfq-NtY69lkaR49VgGsSTHvD_ZnVmTLrCy-bDZWFHpJrEvThltvM"
 };

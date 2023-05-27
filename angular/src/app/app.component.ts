@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { MessagingService } from './messaging-service';
 
 @Component({
   selector: 'app-root',
@@ -9,9 +10,15 @@ export class AppComponent {
   title = 'peliculas-netflix';
   pelicula: any;
   actores: any;
+  message: any;
 
-  constructor() {
+  constructor(private messagingService: MessagingService) {
   }
 
+  ngOnInit() {
+    this.messagingService.requestPermission();
+    this.messagingService.receiveMessaging();
+    this.message = this.messagingService.currentMessage;
+  }
 
 }
