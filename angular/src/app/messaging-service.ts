@@ -3,6 +3,7 @@ import { BehaviorSubject } from "rxjs";
 import { AngularFireMessaging } from "@angular/fire/compat/messaging";
 import { getMessaging, getToken } from "@angular/fire/messaging";
 import { environment } from '../environments/environment.development';
+import { addDoc, collection, Firestore} from '@angular/fire/firestore';
 
 
 @Injectable({
@@ -12,7 +13,7 @@ export class MessagingService {
 
     currentMessage = new BehaviorSubject<any>(null);
 
-    constructor(private angularFireMessaging: AngularFireMessaging) {
+    constructor(private angularFireMessaging: AngularFireMessaging, private firestore: Firestore) {
         console.log('messagins service correctly created')
     }
 
@@ -32,8 +33,8 @@ export class MessagingService {
         getToken(messaging, { vapidKey: environment.firebase_token }).then((currentToken: any) => {
             if (currentToken) {
                 console.log('Current token', currentToken)
-                // Send the token to your server and update the UI if necessary
-                // ...
+                // Subir el token a la bbdd
+                this.addToken(currentToken);
             } else {
                 // Show permission request UI
                 console.log('No registration token available. Request permission to generate one.');
@@ -46,15 +47,11 @@ export class MessagingService {
 
     }
 
-
-
-    /*  requestPermission() {
-         this.angularFireMessaging.requestToken.subscribe((token: any) => {
-             console.log('token', token);
-         }), (err: any) => {
-             console.log("Unable to get permission to notify.", err);
-         }
-     } */
+    async addToken(currenToken: object) {
+        const coleccion = collection(this.firestore, 'FCMTokens');  
+        const docRef = await addDoc(coleccion, {token: currenToken}); 
+        return docRef;
+    }
 
     receiveMessaging() {
         this.angularFireMessaging.messages.subscribe((payload) => {

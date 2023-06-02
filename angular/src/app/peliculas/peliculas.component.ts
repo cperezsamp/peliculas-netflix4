@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { Storage, listAll, ref, uploadBytes, getDownloadURL, StorageReference, uploadBytesResumable } from '@angular/fire/storage';
 import { DomSanitizer } from '@angular/platform-browser';
 import { StorageService } from '../storage.service';
-
+import { MessagingService } from '../messaging-service';
 
 
 
@@ -58,7 +58,10 @@ export class PeliculasComponent implements OnInit {
   peliculaActor: string;
   clipUrl: string;
 
-  constructor(private peliculasService: PeliculasService, private actoresService: ActoresService, private personajesService: PersonajesService, private storage: Storage, private sanitizer: DomSanitizer, private storageService: StorageService) {
+  broadcast :BroadcastChannel;
+
+  constructor(private messaging: MessagingService, private peliculasService: PeliculasService, private actoresService: ActoresService, private personajesService: PersonajesService, private storage: Storage, private sanitizer: DomSanitizer, private storageService: StorageService) {
+    
   }
 
 
@@ -76,7 +79,10 @@ export class PeliculasComponent implements OnInit {
     )
     this.imagesRefs = this.storageService.getAllImages();
     this.clipsRefs = this.storageService.getAllClips();
+    this.messaging.receiveMessaging()
+    
   }
+
 
   edit(): void {
     this.editar = !this.editar;
@@ -92,6 +98,7 @@ export class PeliculasComponent implements OnInit {
     this.newDuracionH = {} as number;
     this.newDuracionM = {} as number;
     this.newOverview = "";
+    this.messaging.receiveMessaging();
 
   }
 
