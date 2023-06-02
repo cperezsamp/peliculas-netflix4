@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
 import { AngularFireMessaging } from "@angular/fire/compat/messaging";
-import { getMessaging, getToken } from "@angular/fire/messaging";
+import { Messaging, getMessaging, getToken, onMessage } from "@angular/fire/messaging";
 import { environment } from '../environments/environment.development';
 import { addDoc, collection, Firestore} from '@angular/fire/firestore';
 
@@ -12,6 +12,7 @@ import { addDoc, collection, Firestore} from '@angular/fire/firestore';
 export class MessagingService {
 
     currentMessage = new BehaviorSubject<any>(null);
+    messaging: Messaging;
 
     constructor(private angularFireMessaging: AngularFireMessaging, private firestore: Firestore) {
         console.log('messagins service correctly created')
@@ -44,7 +45,7 @@ export class MessagingService {
             console.log('An error occurred while retrieving token. ', err);
             // ...
         });
-
+        this.messaging= messaging;
     }
 
     async addToken(currenToken: object) {
@@ -59,4 +60,5 @@ export class MessagingService {
             this.currentMessage.next(payload)
         })
     }
+
 }

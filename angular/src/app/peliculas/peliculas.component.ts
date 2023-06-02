@@ -79,8 +79,8 @@ export class PeliculasComponent implements OnInit {
     )
     this.imagesRefs = this.storageService.getAllImages();
     this.clipsRefs = this.storageService.getAllClips();
-    this.messaging.receiveMessaging()
-    
+    //this.messaging.receiveMessaging()
+    //this.messaging.callOnMessage();
   }
 
 
